@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -25,9 +24,7 @@ func contactPage(w http.ResponseWriter, r *http.Request) {
 	// Render the contact html page
 	http.ServeFile(w, r, "static/contact.html")
 }
-func coursesHandler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Welcome to the Courses page!")
-}
+
 
 func main() {
 
@@ -35,8 +32,7 @@ func main() {
 	http.HandleFunc("/courses", coursePage)
 	http.HandleFunc("/about", aboutPage)
 	http.HandleFunc("/contact", contactPage)
-	http.HandleFunc("/courses", coursesHandler)
-    http.ListenAndServe(":8080", nil)
+	
 
 	err := http.ListenAndServe("0.0.0.0:8080", nil)
 	if err != nil {
