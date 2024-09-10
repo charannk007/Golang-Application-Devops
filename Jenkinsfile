@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                     // Running Docker container
-                    sh 'docker run -d -p 8082:8081 --name golangc golang:v1'
+                    sh 'docker run -d -p 8082:9090 --name golangc golang:v1'
                 }
             }
         }
