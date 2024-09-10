@@ -17,9 +17,9 @@ FROM golang:1.22.5 as base
 WORKDIR /usr/src/app
 
 # Copy Go module files to the working directory
-COPY go.mod go.sum ./
+COPY go.mod ./
 
-# Download and verify Go module dependencies
+# Download Go module dependencies
 RUN go mod download && go mod verify
 
 # Copy the rest of the application source code
@@ -42,5 +42,6 @@ EXPOSE 9090
 
 # Define the command to run when the container starts
 CMD ["./main"]
+
 
 
