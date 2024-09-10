@@ -5,7 +5,7 @@ FROM golang:1.22.5 as base
 WORKDIR /usr/src/app
 
 # Copy Go module files to the working directory
-COPY go.mod ./
+COPY go.mod go.sum ./
 
 # Download and verify Go module dependencies
 RUN go mod download && go mod verify
