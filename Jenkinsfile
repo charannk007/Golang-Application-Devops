@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     // Running Docker container
-                    sh 'docker run -d -p 8083:8081 --name courses golang:latest'
+                    sh 'docker run -d -p 8082:8081 --name courses golang:latest'
                 }
             }
         }
