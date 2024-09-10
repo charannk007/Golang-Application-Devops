@@ -12,25 +12,10 @@ pipeline {
     stage('Removing existing Images and Containers') {
       steps {
         script {
-          // Remove existing containers
-          sh '''
-          CONTAINERS=$(docker ps -aq)
-          if [ "$CONTAINERS" ]; then
-            docker rm -f $CONTAINERS
-          else
-            echo "No containers to remove"
-          fi
-          '''
-
-          // Remove existing images
-          sh '''
-          IMAGES=$(docker images -q)
-          if [ "$IMAGES" ]; then
-            docker rmi -f $IMAGES
-          else
-            echo "No images to remove"
-          fi
-          '''
+           
+            sh 'docker stop $(docker ps -aq) || true'
+            sh 'docker rm $(docker ps -aq) || true'
+            sh 'docker rmi -f $(docker images -q) || true'
         }
       }
     }
