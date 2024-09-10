@@ -1,32 +1,33 @@
-# Use the official Go image as the base stage
 FROM golang:1.22.5 as base
 
 # Set the working directory inside the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy Go module files to the working directory
+# Copy the go.mod and go.sum files to the working directory
 COPY go.mod ./
 
-# Download and verify Go module dependencies
-RUN go mod download && go mod verify
+# Download all the dependencies
+RUN go mod download
 
-# Copy the rest of the application source code
+# Copy the source code to the working directory
 COPY . .
 
-# Build the Go application with the binary named 'main'
-RUN go build -v -o /usr/local/bin/main ./...
+# Build the application
+RUN go build -o main .
 
-# Use a minimal Alpine Linux image for the final image
-FROM alpine:latest
+#######################################################
+# Reduce the image size using multi-stage builds
+# We will use a distroless image to run the application
+FROM gcr.io/distroless/base
 
-# Set the working directory in the final image
-WORKDIR /root
+# Copy the binary from the previous stage
+COPY --from=base /app/main .
 
-# Copy the built executable from the base stage
-COPY --from=base /usr/local/bin/main .
+# Copy the static files from the previous stage
+COPY --from=base /app/static ./static
 
-# Expose the new port on which the application will listen
-EXPOSE 9090
+# Expose the port on which the application will run
+EXPOSE 8080
 
-# Define the command to run when the container starts
+# Command to run the application
 CMD ["./main"]
