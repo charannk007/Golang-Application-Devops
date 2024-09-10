@@ -13,7 +13,7 @@ pipeline {
             steps {
                 script {
                     // Building Docker image using Dockerfile from the cloned repository
-                    sh 'docker build -t golang:latest .'
+                    sh 'docker build -t golang:v1 .'
                 }
             }
         }
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     // Running Docker container
-                    sh 'docker run -d -p 8082:8081 --name courses golang:latest'
+                    sh 'docker run -d -p 8082:8081 --name golangc golang:v1'
                 }
             }
         }
@@ -31,8 +31,7 @@ pipeline {
     post {
         always {
             // Clean up: stopping and removing the container after the pipeline execution
-            sh 'docker stop your-container-name || true'
-            sh 'docker rm your-container-name || true'
+           sh 'Success'
         }
     }
 }
