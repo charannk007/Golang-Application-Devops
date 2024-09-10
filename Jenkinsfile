@@ -13,7 +13,7 @@ pipeline {
             steps {
                 script {
                     // Building Docker image using Dockerfile from the cloned repository
-                    sh 'docker build -t your-docker-image-name:latest .'
+                    sh 'docker build -t golang:latest .'
                 }
             }
         }
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     // Running Docker container
-                    sh 'docker run -d -p 8083:8081 --name your-container-name your-docker-image-name:latest'
+                    sh 'docker run -d -p 8083:8081 --name courses golang:latest'
                 }
             }
         }
