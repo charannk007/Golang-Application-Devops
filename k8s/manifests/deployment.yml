@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golang-application
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: goapplication
+  template:
+    metadata:
+      labels:
+        app: goapplication
+    spec:
+      containers:
+        - name: golang-container
+          image: nkcharan/golang:v1
+          ports:
+            - containerPort: 9090
