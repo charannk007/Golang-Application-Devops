@@ -16,22 +16,22 @@ pipeline {
             }
         }
 
-    stage('Removing existing Images and Containers') {
-      steps {
-        script {
-           
-            sh 'docker stop $(docker ps -aq) || true'
-            sh 'docker rm $(docker ps -aq) || true'
-            sh 'docker rmi -f $(docker images -q) || true'
+        stage('Remove Existing Images and Containers') {
+            steps {
+                script {
+                    // Stop and remove any running containers and remove images
+                    sh 'docker stop $(docker ps -aq) || true'
+                    sh 'docker rm $(docker ps -aq) || true'
+                    sh 'docker rmi -f $(docker images -q) || true'
+                }
+            }
         }
-      }
-    }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Building Docker image using Dockerfile from the cloned repository
-                    sh 'docker build -t golang:v1 .'
+                    // Building Docker image using Dockerfile
+                    sh 'docker build -t ${IMAGE_NAME}:${IMAGE_VERSION} .'
                 }
             }
         }
@@ -40,33 +40,34 @@ pipeline {
             steps {
                 script {
                     // Running Docker container
-                    sh 'docker run -d -p 8082:9090 --name golangc golang:v1'
+                    sh 'docker run -d -p 8082:9090 --name golangc ${IMAGE_NAME}:${IMAGE_VERSION}'
                 }
             }
         }
-    }
 
-     stage('Docker Login') {
-      steps {
-        script {
-          withCredentials([usernamePassword(credentialsId: 'dockers', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-            sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
-          }
+        stage('Docker Login') {
+            steps {
+                script {
+                    // Docker login using credentials
+                    withCredentials([usernamePassword(credentialsId: 'dockers', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
+                    }
+                }
+            }
         }
-      }
+
+        stage('Create Image Tag') {
+            steps {
+                // Tagging the Docker image
+                sh 'docker tag ${IMAGE_NAME}:${IMAGE_VERSION} ${USER_NAME}/${IMAGE_NAME}:${IMAGE_VERSION}'
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                // Pushing the Docker image to DockerHub
+                sh 'docker push ${USER_NAME}/${IMAGE_NAME}:${IMAGE_VERSION}'
+            }
+        }
     }
-
-     stage('Creating the Image Tag') {
-      steps {
-        sh 'docker tag ${IMAGE_NAME}:${IMAGE_VERSION} ${USER_NAME}/${IMAGE_NAME}:${IMAGE_VERSION}'
-      }
-    }
-
-
-     stage('Docker Push Image') {
-      steps {
-        sh 'docker push ${USER_NAME}/${IMAGE_NAME}:${IMAGE_VERSION}'
-      }
-    }
-
 }
