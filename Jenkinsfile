@@ -5,7 +5,7 @@ pipeline {
         USER_NAME = 'nkcharan'
         IMAGE_NAME = 'golang'
         DOCKERHUB_CREDENTIALS = credentials('dockers')
-        IMAGE_VERSION = 'v1'
+        IMAGE_VERSION = 'v2'
     }
 
     stages {
