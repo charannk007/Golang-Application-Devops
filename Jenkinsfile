@@ -100,10 +100,6 @@ pipeline {
         IMAGE_NAME = 'golang'
         DOCKERHUB_CREDENTIALS = credentials('dockers')
         IMAGE_VERSION = 'v2'
-        DEPLOYMENT_YAML = 'k8s/manifest/deployment.yml'  // Path to your deployment YAML
-        SERVICE_YAML = 'k8s/manifest/service.yml'  // Path to your service YAML
-        REMOTE_HOST = '172.31.16.46'
-        SSH_CREDENTIALS_ID = 'mykeysf'  // Updated credential ID
     }
 
     stages {
@@ -168,17 +164,5 @@ pipeline {
             }
         }
 
-        stage('Deploy Deployment and Service to K8s') {
-            steps {
-                sshagent(credentials: ["${SSH_CREDENTIALS_ID}"]) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no -t ${REMOTE_HOST} '
-                        kubectl apply -f ${WORKSPACE}/${DEPLOYMENT_YAML} &&
-                        kubectl apply -f ${WORKSPACE}/${SERVICE_YAML}
-                        '
-                    """
-                }
-            }
-        }
     }
 }
