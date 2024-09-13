@@ -75,10 +75,7 @@ pipeline {
 
       stage('Deploy Deployment and Service to K8s') {
             steps {
-                sshCommand remote: "${SSH_SERVER}", command: """
-                    sudo kubectl apply -f ${WORKSPACE}/${DEPLOYMENT_YAML}
-                    sudo kubectl apply -f ${WORKSPACE}/${SERVICE_YAML}
-                """
+                sshCommand remote: "${SSH_SERVER}", command: "sudo kubectl apply -f ${WORKSPACE}/${DEPLOYMENT_YAML} && sudo kubectl apply -f ${WORKSPACE}/${SERVICE_YAML}"
             }
         }
 
