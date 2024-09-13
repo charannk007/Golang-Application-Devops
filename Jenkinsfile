@@ -103,7 +103,7 @@ pipeline {
         DEPLOYMENT_YAML = 'k8s/manifest/deployment.yml'  // Path to your deployment YAML
         SERVICE_YAML = 'k8s/manifest/service.yml'  // Path to your service YAML
         REMOTE_HOST = '172.31.16.46'
-        SSH_CREDENTIALS_ID = 'mysshkey'  // Updated credential ID
+        SSH_CREDENTIALS_ID = 'mykeysf'  // Updated credential ID
     }
 
     stages {
