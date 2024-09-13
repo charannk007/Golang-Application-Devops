@@ -8,7 +8,8 @@ pipeline {
         IMAGE_VERSION = 'v2'
         DEPLOYMENT_YAML = 'k8s/manifest/deployment.yml'  // Path to your deployment YAML
         SERVICE_YAML = 'k8s/manifest/service.yml'  // Path to your service YAML
-        SSH_SERVER = 'kubes'
+        REMOTE_HOST = '172.31.16.46'
+        SSH_CREDENTIALS_ID = 'my-ssh-key'
     }
 
     stages {
@@ -73,11 +74,19 @@ pipeline {
             }
         }
 
-      stage('Deploy Deployment and Service to K8s') {
+        stage('Deploy Deployment and Service to K8s') {
             steps {
-                sshCommand remote: "${SSH_SERVER}", command: "sudo kubectl apply -f ${WORKSPACE}/${DEPLOYMENT_YAML} && sudo kubectl apply -f ${WORKSPACE}/${SERVICE_YAML}"
+                sshagent(credentials: ["${SSH_CREDENTIALS_ID}"]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no -t ${REMOTE_HOST} '
+                        kubectl apply -f ${WORKSPACE}/${DEPLOYMENT_YAML} &&
+                        kubectl apply -f ${WORKSPACE}/${SERVICE_YAML}
+                        '
+                    """
+                }
             }
         }
+      
 
     }
 }
