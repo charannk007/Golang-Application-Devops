@@ -75,12 +75,8 @@ pipeline {
 
       stage('Deploy Deployment and Service to K8s') {
             steps {
-                // Use SSH server configured in Jenkins to run kubectl commands
                 sshCommand remote: "${SSH_SERVER}", command: """
-                    # Apply the deployment YAML file directly from the cloned repo in Jenkins workspace
                     sudo kubectl apply -f ${WORKSPACE}/${DEPLOYMENT_YAML}
-                    
-                    # Apply the service YAML file directly from the cloned repo in Jenkins workspace
                     sudo kubectl apply -f ${WORKSPACE}/${SERVICE_YAML}
                 """
             }
